@@ -163,6 +163,17 @@ function isValidPassword(username, password1, password2) {
     return (valid);
 }
 
+function isValidLoginPassword(password) {
+    let valid = true;
+
+    // The password can't be blank
+    if ((password === undefined) || (password === null) || (password.length === 0))
+        valid = dispError("The password cannot be blank.");
+
+    return (valid);
+}
+
+
 function validateRegistrationForm() {
 
     let valid=false;
@@ -231,6 +242,8 @@ function validateRegistrationForm() {
 
 function validateLoginForm() {
 
+    debugger;
+
     function validateLogin(username, password) {
         const storedPassword = localStorage.getItem('password_' + username.toLowerCase());
         if (!storedPassword) {
@@ -245,11 +258,10 @@ function validateLoginForm() {
         return true;
     }
 
-
     let usernameDiv  = document.getElementById("loginUsername");
     let passwordDiv = document.getElementById("loginPassword");
     let username = document.getElementById("loginUsername").value;
-    let password1 = document.getElementById("loginPassword").value;
+    let password = document.getElementById("loginPassword").value;
 
     // The username cannot be blank.
     // We use the full user validation instead of just checking for blank
@@ -261,7 +273,7 @@ function validateLoginForm() {
         return;
 
     // Validate password
-    if (!isValidPassword(password))
+    if (!isValidLoginPassword(password))
         return;
 
     // Validate that the username and password match!
