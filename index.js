@@ -63,7 +63,6 @@ function isValidEmail(email) {
     return (valid);
 }
 
-
 function hasUppercaseAndLowercase(text) {
     const uppercaseRegex = /[A-Z]/;
     const lowercaseRegex = /[a-z]/;
@@ -89,6 +88,19 @@ function doesNotContainPassword(password) {
 function doesNotIncludeUsername(password, username) {
     const usernameRegex = new RegExp(username, "i");
     return !usernameRegex.test(password);
+}
+
+function userInLocalStorage(username) {
+    const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+    // Convert username to lowercase
+    username = username.toLowerCase();
+
+    // Does it match the local storage?
+    if (existingUsers.includes(username))
+        return true;
+    else
+        return dispError("Username doesn't exist.");
 }
 
 function saveUserCredentials(username, password) {
@@ -218,10 +230,57 @@ function validateRegistrationForm() {
 }
 
 function validateLoginForm() {
-    let username = document.getElementById("username").value;
-    let password1 = document.getElementById("password").value;
+
+    function validateLogin(username, password) {
+        const storedPassword = localStorage.getItem('password_' + username.toLowerCase());
+        if (!storedPassword) {
+            return dispError("Username not found in local storage");
+        }
+
+        // Make sure passwords match
+        if (storedPassword !== password)
+            return dispError ("Password entered doesn't match password in local storage");
+
+        // We matched!
+        return true;
+    }
 
 
+    let usernameDiv  = document.getElementById("loginUsername");
+    let passwordDiv = document.getElementById("loginPassword");
+    let username = document.getElementById("loginUsername").value;
+    let password1 = document.getElementById("loginPassword").value;
+
+    // The username cannot be blank.
+    // We use the full user validation instead of just checking for blank
+    if (!isValidUsername(username))
+        return;
+
+    // The username must exist (within localStorage)
+    if (!userInLocalStorage(username))
+        return;
+
+    // Validate password
+    if (!isValidPassword(password))
+        return;
+
+    // Validate that the username and password match!
+    if (!validateLogin(username, password))
+        return;
+
+    // Login successful! Reset the form
+    document.getElementById("login").reset();
+
+    // Checkbox is checked
+    const keepLoggedInCheckbox = document.getElementById("persist");
+    if (!keepLoggedInCheckbox.checked === true) {
+        window.alert("Login successful!  Staying logged in for the future.");
+        return;
+    } else {
+        // Regular login
+        window.alert("Login successful!");
+        return;
+    }
 }
 
 function registrationEventHandler(event) {
@@ -236,6 +295,11 @@ function loginEventHandler(event) {
 
 // Register
 const registrationForm = document.getElementById("registration");
+const loginForm = document.getElementById("login");
 
 console.log(registrationForm);
 registrationForm.addEventListener("submit", registrationEventHandler);
+
+console.log(loginForm);
+loginForm.addEventListener("submit", loginEventHandler);
+

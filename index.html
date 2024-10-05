@@ -73,24 +73,24 @@
           onsubmit="return validateLoginForm()"
         >
           <input
+            id="loginUsername"
             name="username"
             type="text"
             placeholder="Username"
-            pattern="^(?!.*(.).*\1).{4,}$"
           />
           <span class="input-icon"><i class="fa-solid fa-user"></i></span><br />
 
           <input
+            id="loginPassword"
             name="password"
             type="text"
             placeholder="Password"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s])(?!.*password).{12,}$"
           />
           <span class="input-icon"><i class="fa-solid fa-key"></i></span
           ><br /><br />
 
           <div class="flex-row">
-            <input name="persist" type="checkbox" />
+            <input id="persist" name="persist" type="checkbox" />
             <label for="persist">Keep me logged in.</label>
             <input type="submit" value="Login" />
           </div>
